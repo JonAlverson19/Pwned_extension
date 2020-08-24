@@ -1,0 +1,17 @@
+{
+  "name": "Pwned?",
+  "version": "0.5",
+  "description": "Auto-check if passwords have been pwned",
+  "browser_action": {
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+  {
+    "matches": [
+      "<all_urls>"
+    ],
+    "js": ["content.js"]
+  }
+  ],
+  "manifest_version": 2
+}
