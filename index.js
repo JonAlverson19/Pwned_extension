@@ -1,28 +1,17 @@
 //script altered from onedebos covtension on github
-const results = document.querySelector(".result-container");
-results.style.display = "none"; //grab and hide results text
-const loading = document.querySelector(".loading");
-loading.style.display = "none"; //grab and hide loading text
-
-// grab the form
-const form = document.querySelector(".form-data");
-// grab the password
-const pass = document.querySelector(".password");
-
-// var script  = document.createElement('script'); 
-// script.src  = "hash.js"; 
-// script.type = 'text/javascript'; 
-// script.defer = true; 
-// document.getElementsByTagName('head').item(0).appendChild(script); 
+const results = document.querySelector(".results");
+const form = document.querySelector(".form-data"); //grab the form
+const pass = document.querySelector(".password"); //grab the password
   
 // declare a function to handle form submission
 const handleSubmit = async e => {
   e.preventDefault();
   check_password(pass.value);
+//  form.style.display = "none"; //hide inputs
 };
 
 function check_password(toCheck){
-	loading.style.display = "block"; //display loading text
+	results.textContent = "loading..."; //display loading text incase api takes time
 	
 	var i = SHA1(toCheck).toUpperCase(); //call sha1 function from hash.js
 	var r = i.substring(0, 5); //grab header for k-anonymity with have i been pwned api
@@ -32,20 +21,16 @@ function check_password(toCheck){
 			f = u[r].split(":")[0],
 			f === e && (t = parseInt(u[r].split(":")[1]));
 			if(t>0) { 
-				results.textContent = "Pwned!\nThis password has been seen " + t + " times before."; 
+				results.textContent = "Pwned!\nThis password has been seen " + t + " times before.";
 			}
 			else { 
 				results.textContent = "Not pwned!\nThis password is not in the data breaches checked."; 
 			}
-			loading.style.display = "none"; //hide loading text
-			results.style.display = "block"; //display results
-			
 	});
 }
 
 form.addEventListener("submit", e => handleSubmit(e));
-
-
+  
 //below is hash.js and jquery-3.5.1.min.js
 //they are here because including them in background with the manifest was not working
 //I did not write either of these scripts

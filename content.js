@@ -25,6 +25,10 @@ if(submits.length == 1 && passwords.length == 1){
 
 //for this to work, hash and jquery must be in background or inline.
 function check_password(toCheck){
+	//grab url of page without parameters after the tld
+	try{ var authority = window.location.href.split('/')[2]; }
+	catch(e){ var authority = window.location.href }
+	
 	var i = SHA1(toCheck).toUpperCase(); //call sha1 function from hash.js
 	var r = i.substring(0, 5); //grab header for k-anonymity with have i been pwned api
 	//api call to hibp taken from their own background script
@@ -32,8 +36,13 @@ function check_password(toCheck){
 		for (var f, e = i.substring(5, 40), u = n.split("\n"), t = 0, r = 0; r < u.length; r++)
 			f = u[r].split(":")[0],
 			f === e && (t = parseInt(u[r].split(":")[1]));
-			if(t>0) { alert("Pwned!\nThis password has been seen " + t + " times before." ); }
+			if(t>0) { chrome.runtime.sendMessage({imgPath: "images/logo_unlocked_x48.png", popupPath: "pwned.html", url: "add: " + authority}); }
+			else { return_to_defaults(authority); }
 	});
+}
+
+function return_to_defaults(a){
+	chrome.runtime.sendMessage({imgPath: "images/logo_locked_x48.png", popupPath: "index.html", url: "remove: " + a});
 }
 
 //below is hash.js and jquery-3.5.1.min.js
