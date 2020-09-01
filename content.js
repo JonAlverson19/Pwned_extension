@@ -32,7 +32,7 @@ let urls = [];
 chrome.storage.local.get('urlList',function(item){
 		urls = item.urlList;
 		if(urls.includes(authority)){
-			chrome.runtime.sendMessage({imgPath: "images/logo_unlocked_x48.png", popupPath: "pwned.html", url: "add: " + authority});
+			chrome.runtime.sendMessage({imgPath: "images/logo_unlockedx48.png", popupPath: "pwned.html", url: "add: " + authority});
 		}//don't need to send else message since default is set
 });
 
@@ -45,8 +45,8 @@ function check_password(toCheck){
 		for (var f, e = i.substring(5, 40), u = n.split("\n"), t = 0, r = 0; r < u.length; r++)
 			f = u[r].split(":")[0],
 			f === e && (t = parseInt(u[r].split(":")[1]));
-			if(t>0) { chrome.runtime.sendMessage({imgPath: "images/logo_unlocked_x48.png", popupPath: "pwned.html", url: "add: " + authority}); }
-			else { chrome.runtime.sendMessage({imgPath: "images/logo_locked_x48.png", popupPath: "index.html", url: "remove: " + authority}); } //for the case a loaded pwned page is given a non-pwned password
+			if(t>0) { chrome.runtime.sendMessage({imgPath: "images/logo_unlockedx48.png", popupPath: "pwned.html", url: "add: " + authority}); }
+			else { chrome.runtime.sendMessage({imgPath: "images/logo_lockedx48.png", popupPath: "index.html", url: "remove: " + authority}); } //for the case a loaded pwned page is given a non-pwned password
 	});
 }
 

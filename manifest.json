@@ -4,10 +4,8 @@
   "description": "Auto-check if passwords have been pwned",
   "browser_action": {
     "default_icon": {
-	"16": "logo_locked_square.png",
-	"48": "logo_locked_square.png",
-	"128": "logo_locked_square.png",
-	"48": "logo_locked_square.png"},
+	  "48": "images/logo_lockedx48.png"
+	},
     "default_popup": "index.html"
   },
   "permissions": ["tabs", "storage"],
@@ -21,5 +19,10 @@
     ],
     "js": ["content.js"]
   }],
+  "icons":{
+    "16": "images/logo_lockedx16.png",
+	"48": "images/logo_lockedx48.png",
+	"128": "images/logo_lockedx128.png"
+  },
   "manifest_version": 2
 }
