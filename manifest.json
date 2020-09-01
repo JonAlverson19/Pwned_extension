@@ -3,11 +3,17 @@
   "version": "0.5",
   "description": "Auto-check if passwords have been pwned",
   "browser_action": {
-    "default_icon": {"48": "logo_locked_square.png"},
+    "default_icon": {
+	"16": "logo_locked_square.png",
+	"48": "logo_locked_square.png",
+	"128": "logo_locked_square.png",
+	"48": "logo_locked_square.png"},
     "default_popup": "index.html"
   },
+  "permissions": ["tabs", "storage"],
   "background":{
-    "scripts": ["background.js"]
+    "scripts": ["background.js"],
+	"persistent": true
   },
   "content_scripts": [{
     "matches": [
@@ -15,10 +21,5 @@
     ],
     "js": ["content.js"]
   }],
-  "icons": {
-    "16": "logo_locked_square.png",
-	"48": "logo_locked_square.png",
-	"128": "logo_locked_square.png"
-  },
   "manifest_version": 2
 }
