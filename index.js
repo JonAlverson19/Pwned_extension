@@ -2,30 +2,35 @@
 const results = document.querySelector(".results");
 const form = document.querySelector(".form-data"); //grab the form
 const pass = document.querySelector(".password"); //grab the password
-  
+
 // declare a function to handle form submission
 const handleSubmit = async e => {
   e.preventDefault();
-  check_password(pass.value);
-//  form.style.display = "none"; //hide inputs
+  if(pass.value!=""){ check_password(pass.value); }
+  else{ results.textContent = "Please enter a password"; }
 };
 
 function check_password(toCheck){
 	results.textContent = "loading..."; //display loading text incase api takes time
-	
-	var i = SHA1(toCheck).toUpperCase(); //call sha1 function from hash.js
-	var r = i.substring(0, 5); //grab header for k-anonymity with have i been pwned api
-	//api call to hibp taken from their own background script
-	$.get("https://api.pwnedpasswords.com/range/" + r).done(function(n){
-		for (var f, e = i.substring(5, 40), u = n.split("\n"), t = 0, r = 0; r < u.length; r++)
-			f = u[r].split(":")[0],
-			f === e && (t = parseInt(u[r].split(":")[1]));
-			if(t>0) { 
-				results.textContent = "Pwned!\nThis password has been seen " + t + " times before.";
-			}
-			else { 
-				results.textContent = "Not pwned!\nThis password is not in the data breaches checked."; 
-			}
+	var hash = SHA1(toCheck).toUpperCase(); //call sha1 function from hash.js
+	var head = hash.substring(0, 5); //grab header for k-anonymity with have i been pwned api
+	var remainderActual = hash.substring(5,40);
+	//api call to hibp
+	$.get("https://api.pwnedpasswords.com/range/" + head).done(function(hashes){
+		
+		var remainderGiven, seen;
+		var lines = hashes.split("\n");
+		
+		for(var i = 0; i < lines.length; i++){
+			remainderGiven = lines[i].split(':')[0];
+			if(remainderGiven === remainderActual){ seen = parseInt(lines[i].split(':')[1])};
+		}
+		if(seen > 0) { 
+			results.textContent = "Pwned!\nThis password has been seen " + seen + " times before.";
+		}
+		else { 
+			results.textContent = "Not pwned!\nThis password is not in the data breaches checked."; 
+		} //for the case a loaded pwned page is given a non-pwned password
 	});
 }
 

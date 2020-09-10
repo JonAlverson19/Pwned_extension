@@ -1,18 +1,22 @@
-//check if there are submit button elements present
-var submits = [];
 var buttons = document.getElementsByTagName("button");
+var inputs = document.getElementsByTagName("input");
+var submits = [];
+var passwords = [];
+
+//check if there are submit button elements present
 for (var i = 0; i < buttons.length; i++){ 
 	if (buttons.item(i).getAttribute("type") == "submit"){ 
 		submits.push(buttons.item(i));
 	}
 }
 
-//check if there are password input elements present
-var passwords = [];
-var inputs = document.getElementsByTagName("input");
+//check if there are password or submit input elements present
 for (var i = 0; i < inputs.length; i++){ 
 	if (inputs.item(i).getAttribute("type") == "password"){
 		passwords.push(inputs.item(i));
+	}
+	else if (inputs.item(i).getAttribute("type") == "submit"){
+		submits.push(inputs.item(i));
 	}
 }
 
@@ -38,15 +42,25 @@ chrome.storage.local.get('urlList',function(item){
 
 //for this to work, hash and jquery must be in background or inline.
 function check_password(toCheck){
-	var i = SHA1(toCheck).toUpperCase(); //call sha1 function from hash.js
-	var r = i.substring(0, 5); //grab header for k-anonymity with have i been pwned api
-	//api call to hibp taken from their own background script
-	$.get("https://api.pwnedpasswords.com/range/" + r).done(function(n){
-		for (var f, e = i.substring(5, 40), u = n.split("\n"), t = 0, r = 0; r < u.length; r++)
-			f = u[r].split(":")[0],
-			f === e && (t = parseInt(u[r].split(":")[1]));
-			if(t>0) { chrome.runtime.sendMessage({imgPath: "images/logo_unlockedx48.png", popupPath: "pwned.html", url: "add: " + authority}); }
-			else { chrome.runtime.sendMessage({imgPath: "images/logo_lockedx48.png", popupPath: "index.html", url: "remove: " + authority}); } //for the case a loaded pwned page is given a non-pwned password
+	var hash = SHA1(toCheck).toUpperCase(); //call sha1 function from hash.js
+	var head = hash.substring(0, 5); //grab header for k-anonymity with have i been pwned api
+	var remainderActual = hash.substring(5,40);
+	//api call to hibp
+	$.get("https://api.pwnedpasswords.com/range/" + head).done(function(hashes){
+		
+		var remainderGiven, seen;
+		var lines = hashes.split("\n");
+		
+		for(var i = 0; i < lines.length; i++){
+			remainderGiven = lines[i].split(':')[0];
+			if(remainderGiven === remainderActual){ seen = parseInt(lines[i].split(':')[1])};
+		}
+		if(seen > 0) { 
+			chrome.runtime.sendMessage({imgPath: "images/logo_unlockedx48.png", popupPath: "pwned.html", url: "add: " + authority}); 
+		}
+		else { 
+			chrome.runtime.sendMessage({imgPath: "images/logo_lockedx48.png", popupPath: "index.html", url: "remove: " + authority}); 
+		} //for the case a loaded pwned page is given a non-pwned password
 	});
 }
 

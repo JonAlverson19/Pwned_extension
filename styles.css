@@ -3,8 +3,12 @@
   text-align: center;
 }
 
-.result {
+.results {
   margin-top: 1em;
+}
+
+.password {
+  margin: 1em;
 }
 
 .display {
